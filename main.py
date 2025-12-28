@@ -1,4 +1,5 @@
 import pygame
+from random import random
 
 class Sprite:
     def __init__(self, center, image):
@@ -24,7 +25,7 @@ class Player(Sprite):
         if self.rect.top < 0:
             self.rect.top = 0
         if self.rect.bottom > 600:
-            self.rect.botomm = 600
+            self.rect.bottom = 600
         
 class Ball(Sprite):
     def __init__(self, center, image, speed):
@@ -39,6 +40,8 @@ class Ball(Sprite):
             else:
                 self.rect.left = player.rect.right
             self.velocity.x = -self.velocity.x
+            self.velocity.rotate_ip((random() - 0.5)* 30)
+            self.speed += 0.5
 
     def check_y_collision(self, player):
         if self.rect.colliderect(player.rect):
@@ -53,6 +56,13 @@ class Ball(Sprite):
         self.rect.x += vector.x
         self.check_x_collision(left_player)
         self.check_x_collision(right_player)
+
+        if self.rect.top <= 0:
+            self.rect.top = 0
+            self.velocity.y = -self.velocity.y
+        if self.rect.bottom >= 800:
+            self.rect.bottom = 800
+            self.velocity.y = -self.velocity.y
 
 
 
@@ -114,7 +124,6 @@ while running:
     # обновление обьектов
     left_player.update()
     right_player.update()
-    ball.update()
     ball.update(left_player, right_player)
     #if ball.rect.colliderect(left_player.rect) or ball.rect.colliderect(right_player.rect):
         #ball.velocity.x = -ball.velocity.x
